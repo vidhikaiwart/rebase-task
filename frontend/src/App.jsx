@@ -5,7 +5,7 @@ function App() {
   const [newTodo, setNewTodo] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/todos')
+    fetch('https://rebase-task-backend.onrender.com/api/todos')
       .then(res => res.json())
       .then(data => setTodos(data));
   }, []);
