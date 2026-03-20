@@ -15,7 +15,7 @@ function App() {
       if (!newTodo.trim()) return;
 
     // INTENTIONAL ERROR: Incorrect body property name
-    const response = await fetch('/api/todos', {
+    const response = await fetch('https://rebase-task-backend.onrender.com/api/todos', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title: newTodo }) 
