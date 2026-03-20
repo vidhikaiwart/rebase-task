@@ -5,7 +5,10 @@ require('dotenv').config();
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:5173', 'https://rebase-task-frontend.vercel.app'],
+  credentials: true
+}));
 app.use(express.json());
 
 
@@ -22,10 +25,6 @@ const connectDB = async () => {
 };
 
 connectDB();
-
-app.use(cors({
-  origin: 'http://localhost:5173'
-}));
 
 const todoSchema = new mongoose.Schema({
  title: {
