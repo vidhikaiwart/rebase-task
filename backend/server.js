@@ -1,18 +1,37 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
+
+app.use(cors());
 app.use(express.json());
 
+
+
 // INTENTIONAL ERROR: Missing 'await' in the database connection or incorrect URI handling
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('Database connection error:', err));
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI);
+    console.log("Connected to MongoDB");
+  } catch (err) {
+    console.error("Database connection error:", err);
+    process.exit(1);
+  }
+};
+
+connectDB();
+
+app.use(cors({
+  origin: 'http://localhost:5173'
+}));
 
 const todoSchema = new mongoose.Schema({
-  title: String,
-  completed: Boolean
+ title: {
+  type: String,
+  required: true
+}
 });
 
 const Todo = mongoose.model('Todo', todoSchema);
@@ -26,11 +45,9 @@ app.get('/api/todos', async (req, res) => {
   }
 });
 
-// INTENTIONAL ERROR: Incorrect parameter name used in the query
 app.post('/api/todos', async (req, res) => {
   const todo = new Todo({
-    title: req.body.task, // ERROR: Frontend sends 'title', not 'task'
-    completed: false
+    title: req.body.title
   });
 
   try {

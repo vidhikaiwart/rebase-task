@@ -5,22 +5,36 @@ function App() {
   const [newTodo, setNewTodo] = useState('');
 
   useEffect(() => {
-    fetch('/api/todos')
+    fetch('http://localhost:5000/api/todos')
       .then(res => res.json())
       .then(data => setTodos(data));
   }, []);
 
   const addTodo = async () => {
+
+      if (!newTodo.trim()) return;
+
     // INTENTIONAL ERROR: Incorrect body property name
     const response = await fetch('/api/todos', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title: newTodo }) 
     });
+
+    if (!response.ok) {
+    alert("Error adding task");
+    return;
+  }
     
     // INTENTIONAL ERROR: Not updating state correctly or ignoring response
-    const data = await response.json();
-    setTodos([...todos, data]);
+let data;
+  try {
+    data = await response.json();  // ✅ safe
+  } catch (err) {
+    console.error("Invalid JSON from server");
+    return;
+  }
+      setTodos(prev => [...prev, data]); 
     setNewTodo('');
   };
 
